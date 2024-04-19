@@ -1,0 +1,11 @@
+name: Minions
+version: '${project.version}'
+main: com.cham.minions.Minions
+api-version: '1.20'
+depend:
+  - Dungeons
+commands:
+  minions:
+    aliases:
+      - minion
+      - m
