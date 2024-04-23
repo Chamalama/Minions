@@ -38,7 +38,6 @@ public enum MinionEnum {
             ServerLevel level = ((CraftWorld)location.getWorld()).getHandle();
             LivingEntity le = minion.getMinionClass().getConstructor(Location.class).newInstance(location);
             level.addFreshEntity(le);
-            le.getBukkitLivingEntity().setCollidable(false);
             le.setSilent(true);
             le.setPos(location.getX(), location.getY(), location.getZ());
             le.getBukkitLivingEntity().getPersistentDataContainer().set(new NamespacedKey(Minions.getMinions(), player.getUniqueId().toString()), PersistentDataType.INTEGER, 1);

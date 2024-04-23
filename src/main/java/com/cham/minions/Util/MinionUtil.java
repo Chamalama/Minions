@@ -1,5 +1,7 @@
 package com.cham.minions.Util;
 
+import com.cham.minions.MinionAPI.Minion;
+import com.cham.minions.MinionAPI.MinionDeathEvent;
 import com.cham.minions.Minions;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import net.minecraft.network.chat.Component;
@@ -12,6 +14,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -218,4 +221,5 @@ public class MinionUtil {
             is.setItemMeta(buildMinionItem(textures, displayName, damage, defense, health, rarity, true).clone().getItemMeta());
         }
     }
+
 }

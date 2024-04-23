@@ -3,6 +3,8 @@ package com.cham.minions.MinionAPI.MinionTypes;
 import com.cham.minions.MinionAPI.Minion;
 import com.cham.minions.MinionAPI.MinionEnum;
 import com.cham.minions.Util.MinionUtil;
+import com.mojang.math.Transformation;
+import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.animal.Chicken;
@@ -15,9 +17,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Random;
+
 public class ChickenMinion extends Chicken implements Minion {
 
-    private int health, defense, damage;
     public ChickenMinion(Location location) {
         super(EntityType.CHICKEN, ((CraftWorld)location.getWorld()).getHandle());
         MinionUtil.setup(this, ChatColor.WHITE + ChatColor.BOLD.toString() + "Chicken Minion");
@@ -55,17 +59,17 @@ public class ChickenMinion extends Chicken implements Minion {
 
     @Override
     public void onDamage(LivingEntity minion, Player user, EntityDamageByEntityEvent e) {
-        e.setDamage(e.getDamage() + this.damage);
+
     }
 
     @Override
     public void onDamageReceived(LivingEntity minion, EntityDamageEvent e) {
-        e.setDamage(e.getDamage() - (double) (this.defense / 5));
+
     }
 
     @Override
     public int attackTime() {
-        return 25;
+        return new Random().nextInt(15) + 10;
     }
 
     @Override

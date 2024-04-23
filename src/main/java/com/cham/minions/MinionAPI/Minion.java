@@ -23,6 +23,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public interface Minion {
     net.minecraft.world.entity.LivingEntity minionEntity();
@@ -39,6 +40,7 @@ public interface Minion {
     int rarity();
     default void tryAI(Minion minion) {
         net.minecraft.world.entity.LivingEntity le = minion.minionEntity();
+        AtomicBoolean deathEventCalled = new AtomicBoolean(false);
         PersistentDataContainer pdc = le.getBukkitEntity().getPersistentDataContainer();
         Bukkit.getScheduler().runTaskTimer(Minions.getMinions(), () -> {
             PlayerData data = null;
@@ -49,6 +51,11 @@ public interface Minion {
             }
             if(id != null) {
                 Player owner = Bukkit.getPlayer(id);
+                MinionDeathEvent minionDeathEvent = new MinionDeathEvent(this, owner);
+                if(this.minionEntity().isDeadOrDying() && !deathEventCalled.get()) {
+                    minionDeathEvent.callEvent();
+                    deathEventCalled.set(true);
+                }
                 if (le.isAlive() && le.getBukkitLivingEntity().isValid()) {
                     int ticks = minion.minionEntity().getBukkitEntity().getTicksLived();
                     if (owner != null) {
@@ -93,6 +100,10 @@ public interface Minion {
                             }
                             if (ticks % attackTime() == 0) {
                                 bukkitMinion.attack(target);
+                                if(target.getHealth() <= 0) {
+                                    MinionEvent minionEvent = new MinionEvent(this, target);
+                                    minionEvent.callEvent();
+                                }
                                 if (data != null) {
                                     data.setCoins(data.getCoins() + 1 + data.getCoinBooster() + coinIncrease());
                                     data.setXp(data.getXp() + 1 + data.getXpBooster());

@@ -1,9 +1,13 @@
 package com.cham.minions.Listeners;
 
 import com.cham.minions.MinionAPI.Minion;
+import com.cham.minions.MinionAPI.MinionDeathEvent;
+import com.cham.minions.MinionAPI.MinionEvent;
+import com.cham.minions.MinionAPI.MinionRegister;
 import com.cham.minions.Minions;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,6 +15,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.persistence.PersistentDataContainer;
+
+import java.util.List;
 
 @SuppressWarnings("deprecation")
 public class MinionListener implements Listener {
@@ -55,6 +62,28 @@ public class MinionListener implements Listener {
         if(event.getEntity().hasMetadata("MINION_TYPE")) {
             event.setDroppedExp(0);
             event.getDrops().clear();
+        }
+    }
+
+    @EventHandler
+    public void onMinionGetKill(MinionEvent event) {
+
+    }
+
+    @EventHandler
+    public void onMinionDeath(MinionDeathEvent event) {
+        Player p = event.getOwner();
+        Minion minion = event.getMinion();
+        MinionRegister register = Minions.getMinions().getRegister();
+        List<Minion> playerMinions = register.getPlayerMinions().get(p.getUniqueId());
+        Minion actualMinion = Minions.getMinionFromEntity(minion.minionEntity().getBukkitLivingEntity());
+        if(playerMinions != null) {
+            PersistentDataContainer pdc = minion.minionEntity().getBukkitEntity().getPersistentDataContainer();
+            if(playerMinions.contains(actualMinion)) {
+                if(pdc.has(new NamespacedKey(Minions.getMinions(), p.getUniqueId().toString()))) {
+                    playerMinions.remove(actualMinion);
+                }
+            }
         }
     }
 }
