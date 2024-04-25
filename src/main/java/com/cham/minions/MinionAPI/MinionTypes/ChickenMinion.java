@@ -20,7 +20,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Random;
 
-public class ChickenMinion extends Chicken implements Minion {
+public class ChickenMinion extends Chicken implements Minion { ;
 
     public ChickenMinion(Location location) {
         super(EntityType.CHICKEN, ((CraftWorld)location.getWorld()).getHandle());
@@ -58,7 +58,7 @@ public class ChickenMinion extends Chicken implements Minion {
     }
 
     @Override
-    public void onDamage(LivingEntity minion, Player user, EntityDamageByEntityEvent e) {
+    public void onDamage(Player owner, Minion minion) {
 
     }
 
@@ -66,12 +66,10 @@ public class ChickenMinion extends Chicken implements Minion {
     public void onDamageReceived(LivingEntity minion, EntityDamageEvent e) {
 
     }
-
     @Override
     public int attackTime() {
-        return new Random().nextInt(15) + 10;
+        return 25;
     }
-
     @Override
     public float moveSpeed() {
         return 3.0F;
@@ -86,4 +84,6 @@ public class ChickenMinion extends Chicken implements Minion {
     public int rarity() {
         return 1;
     }
+
+
 }

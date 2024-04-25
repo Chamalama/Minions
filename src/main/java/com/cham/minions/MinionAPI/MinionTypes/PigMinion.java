@@ -1,5 +1,7 @@
 package com.cham.minions.MinionAPI.MinionTypes;
 
+import com.cham.dungeons.Dungeons;
+import com.cham.dungeons.Util.Config.PlayerData;
 import com.cham.minions.MinionAPI.Minion;
 import com.cham.minions.MinionAPI.MinionEnum;
 import com.cham.minions.Util.MinionUtil;
@@ -8,6 +10,7 @@ import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.animal.Pig;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -55,9 +58,18 @@ public class PigMinion extends Pig implements Minion {
         return false;
     }
 
-    @Override
-    public void onDamage(LivingEntity minion, Player user, EntityDamageByEntityEvent e) {
 
+    @Override
+    public void onDamage(Player owner, Minion minion) {
+        double random = Math.random();
+        double chance = 0.01;
+        if(random < chance) {
+            PlayerData data = Dungeons.getDungeons().getPlayerConfig().loadPlayerData(owner.getUniqueId());
+            data.setCoins(data.getCoins() + 10);
+            owner.playSound(owner.getLocation(), Sound.ENTITY_PIG_AMBIENT, 1.0F, 1.0F);
+            owner.sendMessage(ChatColor.RED + ChatColor.BOLD.toString() + "** PIGGY BANK ** " + ChatColor.GRAY + "(+10 Coins)");
+            Dungeons.getDungeons().getPlayerConfig().savePlayerData(data);
+        }
     }
 
     @Override

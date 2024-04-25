@@ -1,22 +1,15 @@
 package com.cham.minions.Util;
 
-import com.cham.minions.MinionAPI.Minion;
-import com.cham.minions.MinionAPI.MinionDeathEvent;
 import com.cham.minions.Minions;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.GoalSelector;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.profile.PlayerTextures;
@@ -27,7 +20,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 public class MinionUtil {
     public static void setup(LivingEntity livingEntity, String name) {

@@ -1,23 +1,21 @@
-package com.cham.minions.MinionAPI;
+package com.cham.minions.MinionAPI.MinionEvents;
 
+import com.cham.minions.MinionAPI.Minion;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public class MinionEvent extends Event implements Cancellable {
+public class MinionDeathEvent extends Event implements Cancellable {
     private static final HandlerList HANDLERS_LIST = new HandlerList();
     private boolean isCancelled;
     private Minion minion;
-    private LivingEntity entityKilled;
-    public MinionEvent(Minion minion, LivingEntity entityKilled) {
+    private Player owner;
+    public MinionDeathEvent(Minion minion, Player owner) {
         this.minion = minion;
-        this.entityKilled = entityKilled;
-    }
-
-    public MinionEvent(Minion minion) {
-        this.minion = minion;
+        this.owner = owner;
     }
     @Override
     public boolean isCancelled() {
@@ -47,7 +45,9 @@ public class MinionEvent extends Event implements Cancellable {
         return minion;
     }
 
-    public LivingEntity getEntityKilled() {
-        return entityKilled;
+    public Player getOwner() {
+        return owner;
     }
+
+
 }

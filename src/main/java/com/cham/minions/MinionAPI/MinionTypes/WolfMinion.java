@@ -55,7 +55,7 @@ public class WolfMinion extends Wolf implements Minion {
     }
 
     @Override
-    public void onDamage(org.bukkit.entity.LivingEntity minion, Player user, EntityDamageByEntityEvent e) {
+    public void onDamage(Player owner, Minion minion) {
 
     }
 

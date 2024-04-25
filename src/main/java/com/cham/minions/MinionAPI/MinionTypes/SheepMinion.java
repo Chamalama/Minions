@@ -57,7 +57,7 @@ public class SheepMinion extends Sheep implements Minion {
     }
 
     @Override
-    public void onDamage(org.bukkit.entity.LivingEntity minion, Player user, EntityDamageByEntityEvent e) {
+    public void onDamage(Player owner, Minion minion) {
 
     }
 

@@ -93,33 +93,35 @@ public class PlayerListener implements Listener {
         PlayerMinionData playerMinionData = Minions.getMinions().getData();
         Inventory minionInventory = Minions.getPlayerMinionInventory().get(p);
         ItemStack is = p.getInventory().getItemInMainHand();
-        for(ItemStack contents : minionInventory.getContents()) {
-            if(contents != null && Minions.isMinionItem(is)) {
-                Minion minion = Minions.getMinion(ChatColor.stripColor(is.getItemMeta().getDisplayName()));
-                if (event.getHand() == EquipmentSlot.HAND && event.getAction() == Action.RIGHT_CLICK_AIR) {
-                    Minion toCompare = Minions.getMinion(ChatColor.stripColor(contents.getItemMeta().getDisplayName()));
-                    if (minion == toCompare) {
-                        if (!MinionUtil.isMinionUnlocked(contents)) {
-                            MinionUtil.unlockItem(contents);
-                            if (is.getAmount() > 1) {
-                                is.setAmount(is.getAmount() - 1);
+        if (is.getType() != Material.AIR) {
+            for (ItemStack contents : minionInventory.getContents()) {
+                if (contents != null && Minions.isMinionItem(is)) {
+                    Minion minion = Minions.getMinion(ChatColor.stripColor(is.getItemMeta().getDisplayName()));
+                    if (event.getHand() == EquipmentSlot.HAND && event.getAction() == Action.RIGHT_CLICK_AIR) {
+                        Minion toCompare = Minions.getMinion(ChatColor.stripColor(contents.getItemMeta().getDisplayName()));
+                        if (minion == toCompare) {
+                            if (!MinionUtil.isMinionUnlocked(contents)) {
+                                MinionUtil.unlockItem(contents);
+                                if (is.getAmount() > 1) {
+                                    is.setAmount(is.getAmount() - 1);
+                                } else {
+                                    p.getInventory().remove(is);
+                                }
+                                p.playSound(p.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0F, 1.0F);
+                                p.sendTitle(ChatColor.YELLOW + ChatColor.BOLD.toString() + "UNLOCKED NEW MINION", ChatColor.YELLOW + ChatColor.BOLD.toString() + minion.minionName(), 20, 20, 20);
                             } else {
-                                p.getInventory().remove(is);
+                                MinionUtil.upgradeMinion(contents, 1, 1, 1);
+                                if (is.getAmount() > 1) {
+                                    is.setAmount(is.getAmount() - 1);
+                                } else {
+                                    p.getInventory().remove(is);
+                                }
+                                p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 1.0F);
+                                p.sendTitle(ChatColor.AQUA + ChatColor.BOLD.toString() + "UPGRADED MINION", ChatColor.AQUA + ChatColor.BOLD.toString() + minion.minionName(), 20, 20, 20);
                             }
-                            p.playSound(p.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0F, 1.0F);
-                            p.sendTitle(ChatColor.YELLOW + ChatColor.BOLD.toString() + "UNLOCKED NEW MINION", ChatColor.YELLOW + ChatColor.BOLD.toString() + minion.minionName(), 20, 20, 20);
-                        }else{
-                            MinionUtil.upgradeMinion(contents, 1, 1, 1);
-                            if(is.getAmount() > 1) {
-                                is.setAmount(is.getAmount() - 1);
-                            }else{
-                                p.getInventory().remove(is);
-                            }
-                            p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 1.0F);
-                            p.sendTitle(ChatColor.AQUA + ChatColor.BOLD.toString() + "UPGRADED MINION", ChatColor.AQUA + ChatColor.BOLD.toString() + minion.minionName(), 20, 20, 20);
+                            playerMinionData.saveData(p.getUniqueId());
+                            break;
                         }
-                        playerMinionData.saveData(p.getUniqueId());
-                        break;
                     }
                 }
             }

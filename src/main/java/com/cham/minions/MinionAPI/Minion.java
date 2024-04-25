@@ -2,9 +2,10 @@ package com.cham.minions.MinionAPI;
 
 
 import com.cham.dungeons.Dungeons;
-import com.cham.dungeons.Listeners.PlayerListener;
-import com.cham.dungeons.Scoreboard.PlayerScoreboard;
 import com.cham.dungeons.Util.Config.PlayerData;
+import com.cham.minions.MinionAPI.MinionEvents.MinionDamageEvent;
+import com.cham.minions.MinionAPI.MinionEvents.MinionDeathEvent;
+import com.cham.minions.MinionAPI.MinionEvents.MinionEvent;
 import com.cham.minions.Minions;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.world.entity.Mob;
@@ -16,7 +17,6 @@ import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.inventory.ItemStack;
@@ -32,7 +32,7 @@ public interface Minion {
     ItemStack minionItem();
     MoveControl moveControl();
     boolean unlocked();
-    void onDamage(LivingEntity minion, Player user, EntityDamageByEntityEvent e);
+    void onDamage(Player owner, Minion minion);
     void onDamageReceived(LivingEntity minion, EntityDamageEvent e);
     int attackTime();
     float moveSpeed();
@@ -98,18 +98,13 @@ public interface Minion {
                             if (bukkitMinion.getLocation().distance(target.getLocation()) > 2.5) {
                                 moveControl().setWantedPosition(target.getX(), target.getY(), target.getZ(), moveSpeed());
                             }
-                            if (ticks % attackTime() == 0) {
+                            if (ticks % minion.attackTime() == 0) {
                                 bukkitMinion.attack(target);
+                                MinionDamageEvent minionDamageEvent = new MinionDamageEvent(this, owner);
+                                minionDamageEvent.callEvent();
                                 if(target.getHealth() <= 0) {
                                     MinionEvent minionEvent = new MinionEvent(this, target);
                                     minionEvent.callEvent();
-                                }
-                                if (data != null) {
-                                    data.setCoins(data.getCoins() + 1 + data.getCoinBooster() + coinIncrease());
-                                    data.setXp(data.getXp() + 1 + data.getXpBooster());
-                                    PlayerListener.tryLevelUp(data, owner);
-                                    Dungeons.getDungeons().getPlayerConfig().savePlayerData(data);
-                                    PlayerScoreboard.updateScoreboard(owner);
                                 }
                             }
                         }

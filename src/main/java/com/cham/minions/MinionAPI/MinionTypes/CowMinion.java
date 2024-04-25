@@ -56,8 +56,8 @@ public class CowMinion extends Cow implements Minion {
     }
 
     @Override
-    public void onDamage(LivingEntity minion, Player user, EntityDamageByEntityEvent e) {
-        e.setDamage(e.getDamage() + MinionUtil.getMinionDamage(this.minionItem()));
+    public void onDamage(Player owner, Minion minion) {
+
     }
 
     @Override

@@ -1,11 +1,14 @@
 package com.cham.minions.Listeners;
 
-import com.cham.minions.MinionAPI.Minion;
-import com.cham.minions.MinionAPI.MinionDeathEvent;
-import com.cham.minions.MinionAPI.MinionEvent;
-import com.cham.minions.MinionAPI.MinionRegister;
+import com.cham.dungeons.Dungeons;
+import com.cham.dungeons.Listeners.PlayerListener;
+import com.cham.dungeons.Scoreboard.PlayerScoreboard;
+import com.cham.dungeons.Util.Config.PlayerData;
+import com.cham.minions.MinionAPI.*;
+import com.cham.minions.MinionAPI.MinionEvents.MinionDamageEvent;
+import com.cham.minions.MinionAPI.MinionEvents.MinionDeathEvent;
+import com.cham.minions.MinionAPI.MinionEvents.MinionEvent;
 import com.cham.minions.Minions;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.LivingEntity;
@@ -30,13 +33,6 @@ public class MinionListener implements Listener {
         if(event.getDamager() instanceof Player) {
             if(event.getEntity().hasMetadata("MINION_TYPE")) {
                 event.setCancelled(true);
-            }
-        }
-        LivingEntity le = (LivingEntity) event.getDamager();
-        if (le.getCustomName() != null) {
-            Minion minion = Minions.getMinion(ChatColor.stripColor(le.getCustomName().toLowerCase()));
-            if (minion != null) {
-                minion.onDamage(le, null, event);
             }
         }
     }
@@ -68,6 +64,21 @@ public class MinionListener implements Listener {
     @EventHandler
     public void onMinionGetKill(MinionEvent event) {
 
+    }
+
+    @EventHandler
+    public void onMinionDamage(MinionDamageEvent event) {
+        Player p = event.getOwner();
+        Minion minion = event.getMinion();
+        minion.onDamage(p, minion);
+        PlayerData data = Dungeons.getDungeons().getPlayerConfig().loadPlayerData(p.getUniqueId());
+        if (data != null) {
+            data.setCoins(data.getCoins() + 1 + data.getCoinBooster() + minion.coinIncrease());
+            data.setXp(data.getXp() + 1 + data.getXpBooster());
+            PlayerListener.tryLevelUp(data, p);
+            Dungeons.getDungeons().getPlayerConfig().savePlayerData(data);
+            PlayerScoreboard.updateScoreboard(p);
+        }
     }
 
     @EventHandler
