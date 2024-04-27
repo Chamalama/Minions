@@ -6,7 +6,8 @@ import com.cham.minions.Util.MinionUtil;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.control.MoveControl;
-import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.monster.Zoglin;
+import net.minecraft.world.level.Level;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
@@ -14,13 +15,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class ZombieMinion extends Zombie implements Minion {
-    public ZombieMinion(Location location) {
-        super(EntityType.ZOMBIE, ((CraftWorld)location.getWorld()).getHandle());
-        MinionUtil.setup(this, ChatColor.DARK_GREEN + ChatColor.BOLD.toString() + "Zombie Minion");
-        MinionUtil.setDamage(this, 6);
-        this.goalSelector.getAvailableGoals().clear();
-        this.targetSelector.getAvailableGoals().clear();
+public class ZoglinMinion extends Zoglin implements Minion {
+    public ZoglinMinion(Location location) {
+        super(EntityType.ZOGLIN,  ((CraftWorld)location.getWorld()).getHandle());
+        MinionUtil.setup(this, ChatColor.RED + ChatColor.BOLD.toString() + "Zoglin Minion");
+        MinionUtil.setDamage(this, 30);
         Minion.super.tryAI(this);
     }
 
@@ -31,18 +30,19 @@ public class ZombieMinion extends Zombie implements Minion {
 
     @Override
     public MinionEnum spawnMinionType() {
-        return MinionEnum.ZOMBIE_MINION;
+        return MinionEnum.ZOGLIN_MINION;
     }
 
     @Override
     public String minionName() {
-        return "Zombie Minion";
+        return "Zoglin Minion";
     }
 
     @Override
     public ItemStack minionItem() {
-        return MinionUtil.buildMinionItem("http://textures.minecraft.net/texture/a73f7d6d82c9820cd53acd88074117288691043370ee0b777f2fc27a551eadfc", ChatColor.DARK_GREEN + ChatColor.BOLD.toString() + "Zombie Minion",
-                1, 6, 75, 2, this.unlocked());
+        return MinionUtil.buildMinionItem("http://textures.minecraft.net/texture/f05e06b1d1357a3574268a5189615983ceffc185993047da47ac947f3b7507f3",
+                ChatColor.RED + ChatColor.BOLD.toString() + "Zoglin Minion",
+                1, 30, 180, 6, this.unlocked());
     }
 
     @Override
@@ -67,21 +67,21 @@ public class ZombieMinion extends Zombie implements Minion {
 
     @Override
     public int attackTime() {
-        return 17;
+        return 45;
     }
 
     @Override
     public float moveSpeed() {
-        return 1.25F;
+        return 1.45F;
     }
 
     @Override
     public int coinIncrease() {
-        return 2;
+        return 0;
     }
 
     @Override
     public int rarity() {
-        return 9;
+        return 50;
     }
 }

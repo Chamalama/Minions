@@ -7,6 +7,11 @@ import com.cham.minions.MinionAPI.Minion;
 import com.cham.minions.MinionAPI.MinionEnum;
 import com.cham.minions.MinionAPI.MinionRegister;
 import com.cham.minions.MinionAPI.MinionTypes.Finished.*;
+import com.cham.minions.MinionAPI.MinionTypes.Finished.FoxMinion;
+import com.cham.minions.MinionAPI.MinionTypes.Finished.SkeletonHorseMinion;
+import com.cham.minions.MinionAPI.MinionTypes.Finished.PolarBearMinion;
+import com.cham.minions.MinionAPI.MinionTypes.Finished.PiglinBruteMinion;
+import com.cham.minions.MinionAPI.MinionTypes.Finished.HoglinMinion;
 import com.cham.minions.MinionAPI.PlayerMinionData;
 import com.cham.minions.Util.MinionInventory;
 import net.minecraft.world.entity.Entity;
@@ -33,8 +38,14 @@ public final class Minions extends JavaPlugin {
         minions = this;
         data = new PlayerMinionData(this);
         register = new MinionRegister(this);
-        Location loc = new Location(Bukkit.getWorld("Dungeon"), 50000, 250, 50000);
-        registerMinions(new ChickenMinion(loc), new CowMinion(loc), new PigMinion(loc), new SheepMinion(loc), new WolfMinion(loc), new ZombieMinion(loc));
+        Location loc = new Location(Bukkit.getWorld("Dungeon"), 80000, 250, 80000);
+        registerMinions(new ChickenMinion(loc), new CowMinion(loc), new PigMinion(loc), new SheepMinion(loc), new WolfMinion(loc), new ZombieMinion(loc), new FoxMinion(loc),
+                new SkeletonHorseMinion(loc), new SkeletonMinion(loc), new SlimeMinion(loc), new SnifferMinion(loc), new RavagerMinion(loc), new PolarBearMinion(loc), new PillagerMinion(loc),
+                new PandaMinion(loc), new MooshroomMinion(loc), new TurtleMinion(loc), new PiglinMinion(loc), new MagmaSlimeMinion(loc), new PiglinBruteMinion(loc), new IronGolemMinion(loc),
+                new HoglinMinion(loc), new GoatMinion(loc), new FrogMinion(loc), new EvokerMinion(loc), new EndermiteMinion(loc), new EndermanMinion(loc), new DonkeyMinion(loc),
+                new CreeperMinion(loc), new CaveSpiderMinion(loc), new SpiderMinion(loc), new StriderMinion(loc), new WardenMinion(loc), new VindicatorMinion(loc), new VillagerMinion(loc),
+                new SnowGolemMinion(loc), new SilverfishMinion(loc), new WitchMinion(loc), new WitherMinion(loc), new WitherSkeletonMinion(loc), new HuskMinion(loc), new ZoglinMinion(loc),
+                new WardenMinion(loc));
         registerListeners();
         registerCommands();
     }

@@ -6,7 +6,8 @@ import com.cham.minions.Util.MinionUtil;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.control.MoveControl;
-import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.monster.CaveSpider;
+import net.minecraft.world.level.Level;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
@@ -14,16 +15,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class ZombieMinion extends Zombie implements Minion {
-    public ZombieMinion(Location location) {
-        super(EntityType.ZOMBIE, ((CraftWorld)location.getWorld()).getHandle());
-        MinionUtil.setup(this, ChatColor.DARK_GREEN + ChatColor.BOLD.toString() + "Zombie Minion");
-        MinionUtil.setDamage(this, 6);
-        this.goalSelector.getAvailableGoals().clear();
-        this.targetSelector.getAvailableGoals().clear();
+public class CaveSpiderMinion extends CaveSpider implements Minion {
+    public CaveSpiderMinion(Location location) {
+        super(EntityType.CAVE_SPIDER, ((CraftWorld)location.getWorld()).getHandle());
+        MinionUtil.setup(this, ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "Cave Spider Minion");
+        MinionUtil.setDamage(this, 8);
         Minion.super.tryAI(this);
     }
 
+    //http://textures.minecraft.net/texture/46fe63ac5a6fffb9dbc53ff11e51dce214dd3a92e000d8b32791b66e4e31d86d
     @Override
     public LivingEntity minionEntity() {
         return this;
@@ -31,18 +31,19 @@ public class ZombieMinion extends Zombie implements Minion {
 
     @Override
     public MinionEnum spawnMinionType() {
-        return MinionEnum.ZOMBIE_MINION;
+        return MinionEnum.CAVE_SPIDER_MINION;
     }
 
     @Override
     public String minionName() {
-        return "Zombie Minion";
+        return "Cave Spider Minion";
     }
 
     @Override
     public ItemStack minionItem() {
-        return MinionUtil.buildMinionItem("http://textures.minecraft.net/texture/a73f7d6d82c9820cd53acd88074117288691043370ee0b777f2fc27a551eadfc", ChatColor.DARK_GREEN + ChatColor.BOLD.toString() + "Zombie Minion",
-                1, 6, 75, 2, this.unlocked());
+        return MinionUtil.buildMinionItem("http://textures.minecraft.net/texture/46fe63ac5a6fffb9dbc53ff11e51dce214dd3a92e000d8b32791b66e4e31d86d",
+                ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "Cave Spider Minion",
+                1, 8, 20, 3, this.unlocked());
     }
 
     @Override
@@ -67,21 +68,21 @@ public class ZombieMinion extends Zombie implements Minion {
 
     @Override
     public int attackTime() {
-        return 17;
+        return 15;
     }
 
     @Override
     public float moveSpeed() {
-        return 1.25F;
+        return 2.0F;
     }
 
     @Override
     public int coinIncrease() {
-        return 2;
+        return 0;
     }
 
     @Override
     public int rarity() {
-        return 9;
+        return 10;
     }
 }

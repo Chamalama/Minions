@@ -64,7 +64,9 @@ public enum MinionEnum {
     WITHER_SKELETON_MINION(WitherSkeletonMinion.class),
     ZOGLIN_MINION(ZoglinMinion.class),
     SILVER_FISH_MINION(SilverfishMinion.class),
-    BLAZE_MINION(BlazeMinion.class)
+    BLAZE_MINION(BlazeMinion.class),
+    WITCH_MINION(WitchMinion.class),
+    HUSK_MINION(HuskMinion.class),
     ;
 
     public static List<LivingEntity> minionEntity = new ArrayList<>();

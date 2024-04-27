@@ -6,7 +6,8 @@ import com.cham.minions.Util.MinionUtil;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.control.MoveControl;
-import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.animal.Turtle;
+import net.minecraft.world.level.Level;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
@@ -14,13 +15,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class ZombieMinion extends Zombie implements Minion {
-    public ZombieMinion(Location location) {
-        super(EntityType.ZOMBIE, ((CraftWorld)location.getWorld()).getHandle());
-        MinionUtil.setup(this, ChatColor.DARK_GREEN + ChatColor.BOLD.toString() + "Zombie Minion");
-        MinionUtil.setDamage(this, 6);
+public class TurtleMinion extends Turtle implements Minion {
+    public TurtleMinion(Location location) {
+        super(EntityType.TURTLE, ((CraftWorld)location.getWorld()).getHandle());
+        MinionUtil.setup(this, ChatColor.GREEN + ChatColor.BOLD.toString() + "Turtle Minion");
         this.goalSelector.getAvailableGoals().clear();
         this.targetSelector.getAvailableGoals().clear();
+        this.targetSelector.getRunningGoals().close();
         Minion.super.tryAI(this);
     }
 
@@ -31,18 +32,18 @@ public class ZombieMinion extends Zombie implements Minion {
 
     @Override
     public MinionEnum spawnMinionType() {
-        return MinionEnum.ZOMBIE_MINION;
+        return MinionEnum.TURTLE_MINION;
     }
 
     @Override
     public String minionName() {
-        return "Zombie Minion";
+        return "Turtle Minion";
     }
 
     @Override
     public ItemStack minionItem() {
-        return MinionUtil.buildMinionItem("http://textures.minecraft.net/texture/a73f7d6d82c9820cd53acd88074117288691043370ee0b777f2fc27a551eadfc", ChatColor.DARK_GREEN + ChatColor.BOLD.toString() + "Zombie Minion",
-                1, 6, 75, 2, this.unlocked());
+        return MinionUtil.buildMinionItem("http://textures.minecraft.net/texture/c029cfe00d55105a7e9e1b6c13f684083d60e45f5131a1a49f3f0f175afcccc6",
+                ChatColor.GREEN + ChatColor.BOLD.toString() + "Turtle Minion", 1, 2, 250, 3, this.unlocked());
     }
 
     @Override
@@ -52,7 +53,7 @@ public class ZombieMinion extends Zombie implements Minion {
 
     @Override
     public boolean unlocked() {
-        return false;
+        return true;
     }
 
     @Override
@@ -62,22 +63,22 @@ public class ZombieMinion extends Zombie implements Minion {
 
     @Override
     public void onDamageReceived(org.bukkit.entity.LivingEntity minion, EntityDamageEvent e) {
-
+        e.setDamage(e.getDamage() / 2);
     }
 
     @Override
     public int attackTime() {
-        return 17;
+        return 50;
     }
 
     @Override
     public float moveSpeed() {
-        return 1.25F;
+        return 0.5F;
     }
 
     @Override
     public int coinIncrease() {
-        return 2;
+        return 50;
     }
 
     @Override

@@ -8,7 +8,6 @@ import com.cham.minions.MinionAPI.*;
 import com.cham.minions.MinionAPI.MinionEvents.MinionDamageEvent;
 import com.cham.minions.MinionAPI.MinionEvents.MinionDeathEvent;
 import com.cham.minions.MinionAPI.MinionEvents.MinionEvent;
-import com.cham.minions.MinionAPI.MinionTypes.PrinceBlazeMinion;
 import com.cham.minions.Minions;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;

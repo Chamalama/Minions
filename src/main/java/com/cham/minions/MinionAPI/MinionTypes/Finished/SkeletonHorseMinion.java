@@ -6,7 +6,7 @@ import com.cham.minions.Util.MinionUtil;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.control.MoveControl;
-import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.animal.horse.SkeletonHorse;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
@@ -14,13 +14,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class ZombieMinion extends Zombie implements Minion {
-    public ZombieMinion(Location location) {
-        super(EntityType.ZOMBIE, ((CraftWorld)location.getWorld()).getHandle());
-        MinionUtil.setup(this, ChatColor.DARK_GREEN + ChatColor.BOLD.toString() + "Zombie Minion");
-        MinionUtil.setDamage(this, 6);
-        this.goalSelector.getAvailableGoals().clear();
-        this.targetSelector.getAvailableGoals().clear();
+public class SkeletonHorseMinion extends SkeletonHorse implements Minion {
+    public SkeletonHorseMinion(Location location) {
+        super(EntityType.SKELETON_HORSE, ((CraftWorld)location.getWorld()).getHandle());
+        MinionUtil.setup(this, ChatColor.WHITE + ChatColor.BOLD.toString() + "Skeleton Horse Minion");
+        MinionUtil.setDamage(this, 12);
         Minion.super.tryAI(this);
     }
 
@@ -31,18 +29,18 @@ public class ZombieMinion extends Zombie implements Minion {
 
     @Override
     public MinionEnum spawnMinionType() {
-        return MinionEnum.ZOMBIE_MINION;
+        return MinionEnum.SKELETON_HORSE_MINION;
     }
 
     @Override
     public String minionName() {
-        return "Zombie Minion";
+        return "Skeleton Horse Minion";
     }
 
     @Override
     public ItemStack minionItem() {
-        return MinionUtil.buildMinionItem("http://textures.minecraft.net/texture/a73f7d6d82c9820cd53acd88074117288691043370ee0b777f2fc27a551eadfc", ChatColor.DARK_GREEN + ChatColor.BOLD.toString() + "Zombie Minion",
-                1, 6, 75, 2, this.unlocked());
+        return MinionUtil.buildMinionItem("http://textures.minecraft.net/texture/d299d95bfb86e61ea08ea99bc3e0430d2fd45891ee7eec4a46c811e5185c1905", ChatColor.WHITE + ChatColor.BOLD.toString() + "Skeleton Horse Minion",
+                1, 12, 105, 2, this.unlocked());
     }
 
     @Override
@@ -67,21 +65,21 @@ public class ZombieMinion extends Zombie implements Minion {
 
     @Override
     public int attackTime() {
-        return 17;
+        return 15;
     }
 
     @Override
     public float moveSpeed() {
-        return 1.25F;
+        return 2.5F;
     }
 
     @Override
     public int coinIncrease() {
-        return 2;
+        return 5;
     }
 
     @Override
     public int rarity() {
-        return 9;
+        return 12;
     }
 }

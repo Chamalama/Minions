@@ -6,7 +6,8 @@ import com.cham.minions.Util.MinionUtil;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.control.MoveControl;
-import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.monster.Drowned;
+import net.minecraft.world.level.Level;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
@@ -14,13 +15,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class ZombieMinion extends Zombie implements Minion {
-    public ZombieMinion(Location location) {
-        super(EntityType.ZOMBIE, ((CraftWorld)location.getWorld()).getHandle());
-        MinionUtil.setup(this, ChatColor.DARK_GREEN + ChatColor.BOLD.toString() + "Zombie Minion");
-        MinionUtil.setDamage(this, 6);
-        this.goalSelector.getAvailableGoals().clear();
-        this.targetSelector.getAvailableGoals().clear();
+public class DrownedMinion extends Drowned implements Minion {
+    public DrownedMinion(Location location) {
+        super(EntityType.DROWNED, ((CraftWorld)location.getWorld()).getHandle());
+        MinionUtil.setup(this, ChatColor.AQUA + ChatColor.BOLD.toString() + "Drowned Minion");
+        MinionUtil.setDamage(this, 9);
         Minion.super.tryAI(this);
     }
 
@@ -31,18 +30,19 @@ public class ZombieMinion extends Zombie implements Minion {
 
     @Override
     public MinionEnum spawnMinionType() {
-        return MinionEnum.ZOMBIE_MINION;
+        return MinionEnum.DROWNED_MINION;
     }
 
     @Override
     public String minionName() {
-        return "Zombie Minion";
+        return "Drowned Minion";
     }
 
     @Override
     public ItemStack minionItem() {
-        return MinionUtil.buildMinionItem("http://textures.minecraft.net/texture/a73f7d6d82c9820cd53acd88074117288691043370ee0b777f2fc27a551eadfc", ChatColor.DARK_GREEN + ChatColor.BOLD.toString() + "Zombie Minion",
-                1, 6, 75, 2, this.unlocked());
+        return MinionUtil.buildMinionItem("http://textures.minecraft.net/texture/ae7c358bdbf410d71859e84387d38205f6d2438f06f7f1fd5a459e7ea122041b",
+                ChatColor.AQUA + ChatColor.BOLD.toString() + "Drowned Minion",
+                1, 9, 55, 2, this.unlocked());
     }
 
     @Override
@@ -67,21 +67,21 @@ public class ZombieMinion extends Zombie implements Minion {
 
     @Override
     public int attackTime() {
-        return 17;
+        return 25;
     }
 
     @Override
     public float moveSpeed() {
-        return 1.25F;
+        return 1.1F;
     }
 
     @Override
     public int coinIncrease() {
-        return 2;
+        return 0;
     }
 
     @Override
     public int rarity() {
-        return 9;
+        return 45;
     }
 }
