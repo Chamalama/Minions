@@ -1,6 +1,7 @@
 package com.cham.minions.MinionAPI.MinionEvents;
 
 import com.cham.minions.MinionAPI.Minion;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -13,9 +14,11 @@ public class MinionDamageEvent extends Event implements Cancellable {
     private boolean isCancelled;
     private Minion minion;
     private Player owner;
-    public MinionDamageEvent(Minion minion, Player owner) {
+    private LivingEntity target;
+    public MinionDamageEvent(Minion minion, Player owner, LivingEntity target) {
         this.minion = minion;
         this.owner = owner;
+        this.target = target;
     }
     @Override
     public boolean isCancelled() {
@@ -47,5 +50,9 @@ public class MinionDamageEvent extends Event implements Cancellable {
 
     public Player getOwner() {
         return owner;
+    }
+
+    public LivingEntity getTarget() {
+        return target;
     }
 }

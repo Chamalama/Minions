@@ -43,7 +43,6 @@ public interface Minion {
         AtomicBoolean deathEventCalled = new AtomicBoolean(false);
         PersistentDataContainer pdc = le.getBukkitEntity().getPersistentDataContainer();
         Bukkit.getScheduler().runTaskTimer(Minions.getMinions(), () -> {
-            PlayerData data = null;
             UUID id = null;
             for(NamespacedKey key : pdc.getKeys()) {
                 id = UUID.fromString(key.getKey());
@@ -57,9 +56,8 @@ public interface Minion {
                     deathEventCalled.set(true);
                 }
                 if (le.isAlive() && le.getBukkitLivingEntity().isValid()) {
-                    int ticks = minion.minionEntity().getBukkitEntity().getTicksLived();
+                    int ticks = this.minionEntity().getBukkitEntity().getTicksLived();
                     if (owner != null) {
-                        data = Dungeons.getDungeons().getPlayerConfig().loadPlayerData(owner.getUniqueId());
                         if (owner.getWorld() != le.getBukkitLivingEntity().getWorld()) {
                             le.remove(net.minecraft.world.entity.Entity.RemovalReason.KILLED);
                         } else {
@@ -67,7 +65,7 @@ public interface Minion {
                                 if (owner.getLocation().distance(le.getBukkitLivingEntity().getLocation()) > 1.5) {
                                     moveControl().setWantedPosition(owner.getX(), owner.getY(), owner.getZ(), moveSpeed());
                                 }
-                                if (le.getBukkitLivingEntity().getLocation().distance(owner.getLocation()) > 10) {
+                                if (le.getBukkitLivingEntity().getLocation().distance(owner.getLocation()) > 12) {
                                     le.teleportTo(owner.getX(), owner.getY(), owner.getZ());
                                 }
                             }
@@ -100,7 +98,7 @@ public interface Minion {
                             }
                             if (ticks % minion.attackTime() == 0) {
                                 bukkitMinion.attack(target);
-                                MinionDamageEvent minionDamageEvent = new MinionDamageEvent(this, owner);
+                                MinionDamageEvent minionDamageEvent = new MinionDamageEvent(this, owner, target);
                                 minionDamageEvent.callEvent();
                                 if(target.getHealth() <= 0) {
                                     MinionEvent minionEvent = new MinionEvent(this, target);

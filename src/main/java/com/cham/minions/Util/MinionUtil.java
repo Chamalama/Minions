@@ -1,5 +1,6 @@
 package com.cham.minions.Util;
 
+import com.cham.minions.MinionAPI.Minion;
 import com.cham.minions.Minions;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import net.minecraft.network.chat.Component;
@@ -9,6 +10,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -33,6 +36,8 @@ public class MinionUtil {
     }
     public static void setHealth(LivingEntity livingEntity, double hp) {
         livingEntity.getBukkitLivingEntity().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(hp);
+        livingEntity.getBukkitLivingEntity().setMaxHealth(hp);
+        livingEntity.getBukkitLivingEntity().setHealth(hp);
     }
     public static void setArmor(LivingEntity livingEntity, double armor) {
         livingEntity.getBukkitLivingEntity().getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(armor);
@@ -44,7 +49,7 @@ public class MinionUtil {
         livingEntity.getBukkitLivingEntity().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(speed);
     }
 
-    public static ItemStack buildMinionItem(String url, String name, int damage, int defense, int health, int rarity, boolean unlocked) {
+    public static ItemStack buildMinionItem(String url, String name, int level, int damage, int health, int rarity, boolean unlocked) {
         ItemStack is = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) is.getItemMeta();
         PlayerProfile playerProfile = Bukkit.createProfile(UUID.randomUUID());
@@ -56,8 +61,8 @@ public class MinionUtil {
         }
         meta.setDisplayName(name);
         List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
-        lore.add(0, ChatColor.RED + "◼ Damage: " + damage);
-        lore.add(1, ChatColor.YELLOW + "◼ Defense: " + defense);
+        lore.add(0, ChatColor.YELLOW + "◼ Level: " + level);
+        lore.add(1, ChatColor.RED + "◼ Damage: " + damage);
         lore.add(2, ChatColor.GREEN + "◼ Health: " + health);
         lore.add(3, "");
         String s = unlocked ? ChatColor.GRAY + "◼ Unlocked: " + ChatColor.GREEN + "✔" : ChatColor.GRAY + "Unlocked: " + ChatColor.RED + "✘";
@@ -71,30 +76,33 @@ public class MinionUtil {
         return is;
     }
 
-    public static int getMinionDamage(ItemStack is) {
-        if(is != null && is.getItemMeta() != null && is.getItemMeta().hasLore()) {
+    public static int getMinionLevel(ItemStack is) {
+        if (is != null && is.getItemMeta() != null && is.getItemMeta().hasLore()) {
             List<String> lore = is.getItemMeta().getLore();
             String damageString = ChatColor.stripColor(lore.get(0).substring(lore.get(0).lastIndexOf(" ")).replace(" ", ""));
             return Integer.parseInt(damageString);
+        } else {
+            return 0;
         }
-        return 0;
     }
-    public static int getMinionDefense(ItemStack is) {
-        if(is != null && is.getItemMeta() != null && is.getItemMeta().hasLore()) {
+    public static int getMinionDamage(ItemStack is) {
+        if (is != null && is.getItemMeta() != null && is.getItemMeta().hasLore()) {
             List<String> lore = is.getItemMeta().getLore();
             String damageString = ChatColor.stripColor(lore.get(1).substring(lore.get(1).lastIndexOf(" ")).replace(" ", ""));
             return Integer.parseInt(damageString);
+        } else {
+            return 0;
         }
-        return 0;
     }
 
     public static int getMinionHealth(ItemStack is) {
-        if(is != null && is.getItemMeta() != null && is.getItemMeta().hasLore()) {
+        if (is != null && is.getItemMeta() != null && is.getItemMeta().hasLore()) {
             List<String> lore = is.getItemMeta().getLore();
             String damageString = ChatColor.stripColor(lore.get(2).substring(lore.get(2).lastIndexOf(" ")).replace(" ", ""));
             return Integer.parseInt(damageString);
+        } else {
+            return 0;
         }
-        return 0;
     }
 
     public static boolean isMinionUnlocked(ItemStack is) {
@@ -177,8 +185,8 @@ public class MinionUtil {
 
     public static void unlockItem(ItemStack is) {
         if (is != null && is.getItemMeta() != null) {
+            int level = getMinionLevel(is);
             int damage = getMinionDamage(is);
-            int defense = getMinionDefense(is);
             int health = getMinionHealth(is);
             SkullMeta meta = (SkullMeta) is.getItemMeta();
             PlayerProfile profile = meta.getPlayerProfile();
@@ -191,13 +199,13 @@ public class MinionUtil {
             }
             String textures = url.toString();
             int rarity = getRarityFromLore(is);
-            is.setItemMeta(buildMinionItem(textures, displayName, damage, defense, health, rarity, true).clone().getItemMeta());
+            is.setItemMeta(buildMinionItem(textures, displayName, level, damage, health, rarity, true).clone().getItemMeta());
         }
     }
-    public static void upgradeMinion(ItemStack is, int upgradeDMG, int upgradeDEF, int upgradeHP) {
+    public static void upgradeMinion(ItemStack is, int upgradeLVL, int upgradeDMG, int upgradeHP) {
         if (is != null && is.getItemMeta() != null) {
             int damage = getMinionDamage(is) + upgradeDMG;
-            int defense = getMinionDefense(is) + upgradeDEF;
+            int level = getMinionLevel(is) + upgradeLVL;
             int health = getMinionHealth(is) + upgradeHP;
             SkullMeta meta = (SkullMeta) is.getItemMeta();
             PlayerProfile profile = meta.getPlayerProfile();
@@ -210,8 +218,12 @@ public class MinionUtil {
             }
             String textures = url.toString();
             int rarity = getRarityFromLore(is);
-            is.setItemMeta(buildMinionItem(textures, displayName, damage, defense, health, rarity, true).clone().getItemMeta());
+            is.setItemMeta(buildMinionItem(textures, displayName, level, damage, health, rarity, true).clone().getItemMeta());
         }
     }
 
+    public static int getMinionLevel(Minion minion) {
+        String displayName = ChatColor.stripColor(minion.minionEntity().getBukkitEntity().getCustomName());
+        return Integer.parseInt(displayName.substring(displayName.lastIndexOf(" ")).replace(" ", ""));
+    }
 }

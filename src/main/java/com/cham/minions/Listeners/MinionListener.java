@@ -8,6 +8,7 @@ import com.cham.minions.MinionAPI.*;
 import com.cham.minions.MinionAPI.MinionEvents.MinionDamageEvent;
 import com.cham.minions.MinionAPI.MinionEvents.MinionDeathEvent;
 import com.cham.minions.MinionAPI.MinionEvents.MinionEvent;
+import com.cham.minions.MinionAPI.MinionTypes.PrinceBlazeMinion;
 import com.cham.minions.Minions;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
@@ -42,11 +43,8 @@ public class MinionListener implements Listener {
         if(e.getEntity() instanceof LivingEntity) {
             LivingEntity le = (LivingEntity) e.getEntity();
             if (le.getCustomName() != null) {
-                Minion minion = Minions.getMinion(ChatColor.stripColor(le.getCustomName().toLowerCase()));
+                Minion minion = Minions.getMinionFromEntity(le);
                 if(minion != null) {
-                    if(e.getCause() == EntityDamageEvent.DamageCause.DROWNING) {
-                        e.setCancelled(true);
-                    }
                     minion.onDamageReceived(le, e);
                 }
             }
@@ -72,12 +70,14 @@ public class MinionListener implements Listener {
         Minion minion = event.getMinion();
         minion.onDamage(p, minion);
         PlayerData data = Dungeons.getDungeons().getPlayerConfig().loadPlayerData(p.getUniqueId());
-        if (data != null) {
-            data.setCoins(data.getCoins() + 1 + data.getCoinBooster() + minion.coinIncrease());
-            data.setXp(data.getXp() + 1 + data.getXpBooster());
-            PlayerListener.tryLevelUp(data, p);
-            Dungeons.getDungeons().getPlayerConfig().savePlayerData(data);
-            PlayerScoreboard.updateScoreboard(p);
+        if(event.getTarget().hasMetadata("DUMMY")) {
+            if (data != null) {
+                data.setCoins(data.getCoins() + 1 + data.getCoinBooster() + minion.coinIncrease());
+                data.setXp(data.getXp() + 1 + data.getXpBooster());
+                PlayerListener.tryLevelUp(data, p);
+                Dungeons.getDungeons().getPlayerConfig().savePlayerData(data);
+                PlayerScoreboard.updateScoreboard(p);
+            }
         }
     }
 

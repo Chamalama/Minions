@@ -3,6 +3,7 @@ package com.cham.minions.Listeners;
 import com.cham.minions.MinionAPI.Minion;
 import com.cham.minions.MinionAPI.MinionEnum;
 import com.cham.minions.MinionAPI.MinionRegister;
+import com.cham.minions.MinionAPI.MinionTypes.PrinceBlazeMinion;
 import com.cham.minions.MinionAPI.PlayerMinionData;
 import com.cham.minions.Minions;
 import com.cham.minions.Util.MinionInventory;
@@ -10,6 +11,7 @@ import com.cham.minions.Util.MinionUtil;
 import com.cham.minions.Util.RealtimeInventory;
 import net.minecraft.world.entity.Entity;
 import org.bukkit.*;
+import org.bukkit.entity.Blaze;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -42,7 +44,6 @@ public class PlayerListener implements Listener {
         p.setMetadata("OWNER", new FixedMetadataValue(Minions.getMinions(), ""));
         Minions.getMinions().getData().saveData(p.getUniqueId());
     }
-
     @EventHandler(
             priority = EventPriority.LOWEST
     )
@@ -57,7 +58,6 @@ public class PlayerListener implements Listener {
         }
         Minions.getMinions().getData().saveData(p.getUniqueId());
     }
-
     @EventHandler
     public void onMinionInv(InventoryClickEvent event) {
         Player p = (Player) event.getWhoClicked();
@@ -73,7 +73,8 @@ public class PlayerListener implements Listener {
                                 Minion toSummon = Minions.getMinion(ChatColor.stripColor(is.getItemMeta().getDisplayName()).toLowerCase());
                                 MinionUtil.setDamage(toSummon.minionEntity(), MinionUtil.getMinionDamage(is));
                                 MinionUtil.setHealth(toSummon.minionEntity(), MinionUtil.getMinionHealth(is));
-                                MinionEnum.spawnMinion(p.getLocation(), toSummon.spawnMinionType(), p, toSummon);
+                                int level = MinionUtil.getMinionLevel(is);
+                                MinionEnum.spawnMinion(p.getLocation(), toSummon.spawnMinionType(), p, toSummon, level);
                             } else {
                                 p.sendMessage(ChatColor.RED + ChatColor.BOLD.toString() + "[!] " + ChatColor.RED + "No more minion slots!");
                             }
@@ -86,7 +87,6 @@ public class PlayerListener implements Listener {
             }
         }
     }
-
     @EventHandler
     public void onPlayerRedeem(PlayerInteractEvent event) {
         Player p = event.getPlayer();
@@ -110,14 +110,18 @@ public class PlayerListener implements Listener {
                                 p.playSound(p.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0F, 1.0F);
                                 p.sendTitle(ChatColor.YELLOW + ChatColor.BOLD.toString() + "UNLOCKED NEW MINION", ChatColor.YELLOW + ChatColor.BOLD.toString() + minion.minionName(), 20, 20, 20);
                             } else {
-                                MinionUtil.upgradeMinion(contents, 1, 1, 1);
-                                if (is.getAmount() > 1) {
-                                    is.setAmount(is.getAmount() - 1);
-                                } else {
-                                    p.getInventory().remove(is);
+                                if (MinionUtil.getMinionLevel(is) < 50) {
+                                    MinionUtil.upgradeMinion(contents, 1, 1, 1);
+                                    if (is.getAmount() > 1) {
+                                        is.setAmount(is.getAmount() - 1);
+                                    } else {
+                                        p.getInventory().remove(is);
+                                    }
+                                    p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 1.0F);
+                                    p.sendTitle(ChatColor.AQUA + ChatColor.BOLD.toString() + "UPGRADED MINION", ChatColor.AQUA + ChatColor.BOLD.toString() + minion.minionName(), 20, 20, 20);
+                                }else{
+                                    p.sendMessage(ChatColor.RED + "(!) This minion is max level!");
                                 }
-                                p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 1.0F);
-                                p.sendTitle(ChatColor.AQUA + ChatColor.BOLD.toString() + "UPGRADED MINION", ChatColor.AQUA + ChatColor.BOLD.toString() + minion.minionName(), 20, 20, 20);
                             }
                             playerMinionData.saveData(p.getUniqueId());
                             break;
@@ -149,7 +153,6 @@ public class PlayerListener implements Listener {
             }
         }
     }
-
     @EventHandler(priority = EventPriority.MONITOR)
     public void onWorldChange(PlayerChangedWorldEvent event) {
         Player p = event.getPlayer();

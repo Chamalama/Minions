@@ -1,16 +1,13 @@
-package com.cham.minions.MinionAPI.MinionTypes;
+package com.cham.minions.MinionAPI.MinionTypes.Finished;
 
-import com.cham.dungeons.Dungeons;
-import com.cham.dungeons.Util.Config.PlayerData;
 import com.cham.minions.MinionAPI.Minion;
 import com.cham.minions.MinionAPI.MinionEnum;
 import com.cham.minions.Util.MinionUtil;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.control.MoveControl;
-import net.minecraft.world.entity.animal.Pig;
+import net.minecraft.world.entity.animal.Cow;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Sound;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -18,10 +15,10 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class PigMinion extends Pig implements Minion {
-    public PigMinion(Location location) {
-        super(EntityType.PIG, ((CraftWorld)location.getWorld()).getHandle());
-        MinionUtil.setup(this, ChatColor.RED + ChatColor.BOLD.toString() + "Pig Minion");
+public class CowMinion extends Cow implements Minion {
+    public CowMinion(Location location) {
+        super(EntityType.COW, ((CraftWorld)location.getWorld()).getHandle());
+        MinionUtil.setup(this, ChatColor.WHITE + ChatColor.BOLD.toString() + "Cow Minion");
         MinionUtil.setDamage(this, MinionUtil.getMinionDamage(this.minionItem()));
         this.goalSelector.getAvailableGoals().clear();
         Minion.super.tryAI(this);
@@ -34,18 +31,23 @@ public class PigMinion extends Pig implements Minion {
 
     @Override
     public MinionEnum spawnMinionType() {
-        return MinionEnum.PIG_MINION;
+        return MinionEnum.COW_MINION;
     }
 
     @Override
     public String minionName() {
-        return "Pig Minion";
+        return "Cow Minion";
     }
 
     @Override
     public ItemStack minionItem() {
-        return MinionUtil.buildMinionItem("http://textures.minecraft.net/texture/4a37ec8fa9a7329723349c4889864e3eaa51b0c1877e54bd2bb3e0ae0d099fa6",
-                ChatColor.RED + ChatColor.BOLD.toString() + "Pig Minion", 2, 2, 20, 1, this.unlocked());
+        return MinionUtil.buildMinionItem("http://textures.minecraft.net/texture/387810fcf5f3a27dda4580bdc761867d14487fdecf0e138c5830d92be33b48a2", ChatColor.WHITE + ChatColor.BOLD.toString() + "Cow Minion",
+                3, 3, 30, 1, this.unlocked());
+    }
+
+    @Override
+    public boolean unlocked() {
+        return false;
     }
 
     @Override
@@ -54,46 +56,33 @@ public class PigMinion extends Pig implements Minion {
     }
 
     @Override
-    public boolean unlocked() {
-        return false;
-    }
-
-
-    @Override
     public void onDamage(Player owner, Minion minion) {
         double random = Math.random();
-        double chance = 0.01;
-        if(random < chance) {
-            PlayerData data = Dungeons.getDungeons().getPlayerConfig().loadPlayerData(owner.getUniqueId());
-            data.setCoins(data.getCoins() + 10);
-            owner.playSound(owner.getLocation(), Sound.ENTITY_PIG_AMBIENT, 1.0F, 1.0F);
-            owner.sendMessage(ChatColor.RED + ChatColor.BOLD.toString() + "** PIGGY BANK ** " + ChatColor.GRAY + "(+10 Coins)");
-            Dungeons.getDungeons().getPlayerConfig().savePlayerData(data);
-        }
+        double chance = 0.02;
     }
 
     @Override
     public void onDamageReceived(LivingEntity minion, EntityDamageEvent e) {
-
+        e.setDamage(e.getDamage() - 1);
     }
 
     @Override
     public int attackTime() {
-        return 20;
+        return 40;
     }
 
     @Override
     public float moveSpeed() {
-        return 2.1F;
+        return 1.5F;
     }
 
     @Override
     public int coinIncrease() {
-        return 0;
+        return 1;
     }
 
     @Override
     public int rarity() {
-        return 2;
+        return 3;
     }
 }

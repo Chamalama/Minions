@@ -6,14 +6,13 @@ import com.cham.minions.Listeners.PlayerListener;
 import com.cham.minions.MinionAPI.Minion;
 import com.cham.minions.MinionAPI.MinionEnum;
 import com.cham.minions.MinionAPI.MinionRegister;
-import com.cham.minions.MinionAPI.MinionTypes.*;
+import com.cham.minions.MinionAPI.MinionTypes.Finished.*;
 import com.cham.minions.MinionAPI.PlayerMinionData;
 import com.cham.minions.Util.MinionInventory;
 import net.minecraft.world.entity.Entity;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -35,10 +34,9 @@ public final class Minions extends JavaPlugin {
         data = new PlayerMinionData(this);
         register = new MinionRegister(this);
         Location loc = new Location(Bukkit.getWorld("Dungeon"), 50000, 250, 50000);
-        registerMinions(new ChickenMinion(loc), new CowMinion(loc), new PigMinion(loc), new SheepMinion(loc), new WolfMinion(loc));
+        registerMinions(new ChickenMinion(loc), new CowMinion(loc), new PigMinion(loc), new SheepMinion(loc), new WolfMinion(loc), new ZombieMinion(loc));
         registerListeners();
         registerCommands();
-
     }
 
     @Override
@@ -76,7 +74,17 @@ public final class Minions extends JavaPlugin {
         return minionMap.get(name.toLowerCase());
     }
     public static Minion getMinionFromEntity(LivingEntity le) {
-        return minionMap.get(ChatColor.stripColor(le.getCustomName().toLowerCase()));
+        if (le != null) {
+            if(le.getCustomName().contains(ChatColor.GRAY.toString())) {
+                String displayName = ChatColor.stripColor(le.getCustomName());
+                String formatted = displayName.substring(0, displayName.lastIndexOf(" "));
+                return minionMap.get(formatted.toLowerCase());
+            }else{
+                return null;
+            }
+        }else{
+            return null;
+        }
     }
 
     public static boolean isMinionItem(ItemStack itemStack) {
@@ -86,11 +94,7 @@ public final class Minions extends JavaPlugin {
         }
         return false;
     }
-    public static void removeEntityFromWorld(World world, LivingEntity... livingEntities) {
-        for(LivingEntity le : livingEntities) {
-            world.getEntities().remove(le);
-        }
-    }
+
     public void populateMapDefault(Player player) {
         if (!playerMinionInventory.containsKey(player)) {
             playerMinionInventory.put(player, new MinionInventory(player).getInventory());
